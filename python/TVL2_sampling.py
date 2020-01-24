@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 
 
 def deltaTV_pointwise(x,x2):
-    #return  np.abs(np.roll(x2,1,axis=0)- x2)+np.abs(np.roll(x2,1,axis=1) - x2) -np.abs(np.roll(x,1,axis=0)- x) -np.abs(np.roll(x,1,axis=1) - x)
     return  np.abs(np.roll(x2,1,axis=0)- x2) + np.abs(np.roll(x2,1,axis=1) - x2) + np.abs(np.roll(x2,-1,axis=0)- x2) + np.abs(np.roll(x2,-1,axis=1) - x2)  -np.abs(np.roll(x,1,axis=0)- x) -np.abs(np.roll(x,1,axis=1) - x) - np.abs(np.roll(x,-1,axis=0)- x) -np.abs(np.roll(x,-1,axis=1) - x)
 
 def transition_all_TV(x,alpha,beta): 
