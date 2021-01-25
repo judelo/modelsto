@@ -59,7 +59,7 @@ def grad_htv(I, eps):
     """
     grad_x, grad_y = grad(I)
     norme = np.sqrt(grad_x**2 + grad_y**2)
-    temp1 = -1/1*div(grad_x,grad_y)
+    temp1 = -1/(eps)*div(grad_x,grad_y)
     temp2 = (-div(grad_x/(norme+1e-15), grad_y/(norme+1e-15)))
     return  temp1*(norme < eps) + temp2*(norme>=eps)
 
