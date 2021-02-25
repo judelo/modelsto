@@ -151,3 +151,49 @@ def chambolle_pock_deblurring_TV(ub,h,lambd,niter):
         ut = unew
         
     return ut
+
+
+
+
+###################
+## interpolation
+##################
+
+
+def chambolle_pock_interpolation_TV2(ub,mask,lambd,niter):
+    # the function solves the problem
+    # argmin_u   1/2 \| Au - ub\|^2 + \lambda TV(u)
+    # with TV(u) = \sum_i \|\nabla u (i) \|_2
+    # and A = diagonal matrix represented by the mask
+    # uses niter iterations of Chambolle-Pock
+
+    nr,nc = ub.shape
+    ut = np.copy(ub)
+
+    p = np.zeros((nr,nc,2))
+    tau   = 0.9/np.sqrt(8*lambd**2)
+    sigma = 0.9/np.sqrt(8*lambd**2) 
+    theta = 1
+    ubar = np.copy(ut)
+
+    for k in range(niter):
+        
+        # subgradient step on p 
+        ux,uy  = grad(ubar)
+        p = p + sigma*lambd*np.stack((ux,uy),axis=2)
+        normep = np.sqrt(p[:,:,0]**2+p[:,:,1]**2)
+        normep = normep*(normep>1) + (normep<=1)
+        p[:,:,0] = p[:,:,0]/normep
+        p[:,:,1] = p[:,:,1]/normep
+        
+        # subgradient step on u
+        d=div(p[:,:,0],p[:,:,1])
+        unew = (ut+tau*lambd*d+tau*mask*ub) 
+        unew = unew/(1+tau*mask)
+    
+        #extragradient step on u 
+        ubar = unew+theta*(unew-ut)
+        ut = unew
+        
+    return ut
+
